@@ -180,9 +180,9 @@
             }
         ],
         "indexes": [],
-        "listRule": null,
-        "viewRule": null,
-        "createRule": null,
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
         "updateRule": null,
         "deleteRule": null,
         "options": {}

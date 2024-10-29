@@ -34,22 +34,12 @@
             text-wrap: nowrap;
             width: min-content;
             height: min-content;
-        }
-
-        #filter-container {
-            width: 100%;
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            height: 2rem;
-            gap: 10px;
-            padding: 10px;
-
-        }
+        } 
     </style>
     <script src="https://unpkg.com/@tanstack/table-core@8.11.3/build/umd/index.production.js"></script>
     <script src="https://unpkg.com/@tanstack/match-sorter-utils@8.19.4/build/umd/index.production.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/pocketbase@0.21.5/dist/pocketbase.umd.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="./js/main.js">
     </script>
 
@@ -68,9 +58,10 @@
 
         <hr />
 
-        <!-- https://github.com/TanStack/table/discussions/4928 -->
-        <div id="filter-container" class="p-2">
-            <div class="" style="height: 35px; width: 35px;"><svg viewBox="0 0 24 24" fill="none"
+        <div class="w-full flex flex-row flex-wrap items-center h-18 gap-4 px-4 py-2">
+            <input type="text" id="global-filter" placeholder="Filter by text..." class="border-2 border-indigo-500 p-4 rounded-xl text-gray-800"/>
+            <div class="flex flex-row flex-wrap" id="filter-container">
+                <div style="height: 35px; width: 35px;" ><svg viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -81,9 +72,9 @@
                     </g>
                 </svg></div>
         </div>
+    </div>
         <hr />
-        <input type="text" id="global-filter" placeholder="Filter by text..."
-            style="width: 100%; padding: 10px; box-sizing: border-box;" />
+
         <div id="table-container" class="p-2" style="width:100%;"></div>
         <hr />
         <div style="width:100%;">
@@ -91,6 +82,7 @@
 
         </textarea>
         </div>
+
     </div>
 </body>
 

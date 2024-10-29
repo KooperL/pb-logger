@@ -178,8 +178,11 @@ function renderTable(tableContainer, table) {
     });
     const paginationElement = document.createElement("div");
     paginationElement.style = "display: flex; justify-content: space-between; align-items: center; padding: 10px;";
-    const pageControls = document.createElement("div");
+    const emptyDiv = document.createElement("div");
+    paginationElement.appendChild(emptyDiv);
 
+    const pageControls = document.createElement("div");
+    pageControls.style = "display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 20px;";
     const prevButton = document.createElement("button");
     prevButton.innerHTML = "Previous";
     prevButton.style.marginRight = "10px";
@@ -220,8 +223,8 @@ function renderTable(tableContainer, table) {
     paginationElement.appendChild(pageSizeSelect);
 
     tableContainer.innerHTML = "";
-    tableContainer.appendChild(tableElement); // Add table
-    tableContainer.appendChild(paginationElement); // Add pagination controls
+    tableContainer.appendChild(tableElement);
+    tableContainer.appendChild(paginationElement);
 }
 
 (async () => {
@@ -297,11 +300,15 @@ function renderTable(tableContainer, table) {
     const host = document.getElementById('pb-host').innerText
     const pb = new PocketBase(host);
 
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+      });
+
     let pageSize = 50;
     let rowOffset = 0;
     const fiveDaysAgo = new Date(new Date().getTime() - 5 * 24 * 60 * 60 * 1000).toISOString()
     const result = await pb.collection("log").getList(rowOffset + 1, pageSize, {
-        filter: `created > "${fiveDaysAgo}"`,
+        filter: `created > "${fiveDaysAgo}" ${params?.host ? `&& host = "${params.host}"` : ''}`,
         sort: "-created",
     });
 
@@ -311,6 +318,9 @@ function renderTable(tableContainer, table) {
         "*",
         function (e) {
             if (e.action === "create") {
+                if (params?.host && e.record.host !== params.host) {
+                    return
+                }
                 table.options.data = [e.record, ...table.options.data];
                 table.setState((state) => {
                     return {
