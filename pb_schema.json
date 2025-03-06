@@ -1,190 +1,198 @@
 [
     {
         "id": "sg7jbjkyj05p5h8",
-        "name": "log",
-        "type": "base",
-        "system": false,
-        "schema": [
-            {
-                "system": false,
-                "id": "mnmwc262",
-                "name": "title",
-                "type": "text",
-                "required": false,
-                "presentable": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "system": false,
-                "id": "1igs7kml",
-                "name": "detail",
-                "type": "text",
-                "required": false,
-                "presentable": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "system": false,
-                "id": "3rqsqnno",
-                "name": "channel",
-                "type": "text",
-                "required": false,
-                "presentable": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "system": false,
-                "id": "ekifljr6",
-                "name": "level",
-                "type": "select",
-                "required": false,
-                "presentable": false,
-                "unique": false,
-                "options": {
-                    "maxSelect": 1,
-                    "values": [
-                        "info",
-                        "debug",
-                        "log",
-                        "warning",
-                        "error",
-                        "critical"
-                    ]
-                }
-            },
-            {
-                "system": false,
-                "id": "q4xfiny1",
-                "name": "submitted_on",
-                "type": "date",
-                "required": false,
-                "presentable": false,
-                "unique": false,
-                "options": {
-                    "min": "",
-                    "max": ""
-                }
-            },
-            {
-                "system": false,
-                "id": "wqv5q07f",
-                "name": "session",
-                "type": "text",
-                "required": false,
-                "presentable": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "system": false,
-                "id": "4onm2iha",
-                "name": "session_inc",
-                "type": "number",
-                "required": false,
-                "presentable": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "noDecimal": false
-                }
-            },
-            {
-                "system": false,
-                "id": "95spqplo",
-                "name": "identifier",
-                "type": "text",
-                "required": false,
-                "presentable": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "system": false,
-                "id": "uj3eixfn",
-                "name": "thread",
-                "type": "text",
-                "required": false,
-                "presentable": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "system": false,
-                "id": "rioirios",
-                "name": "host",
-                "type": "text",
-                "required": false,
-                "presentable": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "system": false,
-                "id": "hjc7kiat",
-                "name": "tenant",
-                "type": "text",
-                "required": false,
-                "presentable": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            },
-            {
-                "system": false,
-                "id": "veo07msf",
-                "name": "source",
-                "type": "text",
-                "required": false,
-                "presentable": false,
-                "unique": false,
-                "options": {
-                    "min": null,
-                    "max": null,
-                    "pattern": ""
-                }
-            }
-        ],
-        "indexes": [],
         "listRule": "",
         "viewRule": "",
         "createRule": "",
         "updateRule": null,
         "deleteRule": null,
-        "options": {}
+        "name": "log",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text724990059",
+                "max": 0,
+                "min": 0,
+                "name": "title",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text772177811",
+                "max": 0,
+                "min": 0,
+                "name": "detail",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text2734263879",
+                "max": 0,
+                "min": 0,
+                "name": "channel",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text2599078931",
+                "max": 0,
+                "min": 0,
+                "name": "level",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text1382224840",
+                "max": 0,
+                "min": 0,
+                "name": "submitted_on",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text1314505826",
+                "max": 0,
+                "min": 0,
+                "name": "tenant",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text1602912115",
+                "max": 0,
+                "min": 0,
+                "name": "source",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text824200323",
+                "max": 0,
+                "min": 0,
+                "name": "thread",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text3475444733",
+                "max": 0,
+                "min": 0,
+                "name": "host",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text1999537002",
+                "max": 0,
+                "min": 0,
+                "name": "identifier",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text3494172116",
+                "max": 0,
+                "min": 0,
+                "name": "session",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text3931883340",
+                "max": 0,
+                "min": 0,
+                "name": "session_inc",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            }
+        ],
+        "indexes": [],
+        "system": false
     }
 ]

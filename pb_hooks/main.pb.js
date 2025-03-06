@@ -9,117 +9,11 @@ routerAdd("get", "/realtime", (c) => {
   return c.html(200, html)
 })
 
-// Create a collection for logs if it doesn't already exist
-onAfterBootstrap((e) => {
-  const existingCollection = $app.dao().findCollectionByNameOrId("log")
-  if (existingCollection) {
-    return
-  }
-
-  const collection = new Collection({
-    name: "log",
-    type: "base",
-    system: false,
-    schema: [
-      {
-        name: "title",
-        type: "text",
-        required: false,
-      },
-      {
-        name: "detail",
-        type: "text",
-        required: false,
-      },
-      {
-        name: "channel",
-        type: "text",
-        required: false,
-      },
-      {
-        name: "level",
-        type: "select",
-        required: false,
-        options: {
-          maxSelect: 1,
-          values: [
-            "info",
-            "debug",
-            "log",
-            "warning",
-            "error",
-            "critical"
-          ]
-        }
-      },
-      {
-        name: "submitted_on",
-        type: "date",
-        required: false,
-        options: {
-          min: "",
-          max: ""
-        }
-      },
-      {
-        name: "session",
-        type: "text",
-        required: false,
-      },
-      {
-        name: "session_inc",
-        type: "number",
-        required: false,
-        options: {
-          min: null,
-          max: null,
-          noDecimal: false
-        }
-      },
-      {
-        name: "identifier",
-        type: "text",
-        required: false,
-      },
-      {
-        name: "thread",
-        type: "text",
-        required: false,
-      },
-      {
-        name: "host",
-        type: "text",
-        required: false,
-      },
-      {
-        name: "tenant",
-        type: "text",
-        required: false,
-      },
-      {
-        name: "source",
-        type: "text",
-        required: false,
-      }
-    ],
-    indexes: [],
-    listRule: "",
-    viewRule: "",
-    createRule: "",
-    updateRule: null,
-    deleteRule: null,
-    options: {}
-  });
-
-  $app.dao().saveCollection(collection)
-
-})
-
 // Every night, remove all records that are older than 5 days
 cronAdd("purgeOldRecords", "0 0 * * *", () => {
   const date = new Date();
   date.setDate(date.getDate() - 5);
-  const records = $app.dao().findRecordsByFilter(
+  const records = $app.findRecordsByFilter(
     "log",
     "created < {:date}", "-created",
     0,
@@ -127,33 +21,31 @@ cronAdd("purgeOldRecords", "0 0 * * *", () => {
     { date: date.toISOString().replace('T', ' ') },
   )
   records.forEach((record) => {
-    $app.dao().deleteRecord(record)
+    $app.delete(record)
   })
 })
 
-
-
-routerAdd("post", "api/custom/log", (c) => {
+routerAdd("post", "/api/v1/log", (c) => {
   try {
-    const data = $apis.requestInfo(c).data;
+    const data = c.requestInfo().body;
 
-    const logCollection = $app.dao().findCollectionByNameOrId("log");
-    const logRecord = new Record(logCollection, {
-      title: data?.title,
-      detail: data?.detail,
-      channel: data?.channel,
-      level: data?.level,
-      submitted_on: data?.submitted_on,
-      tenant: data?.source?.tenant,
-      source: data?.source?.source,
-      thread: data?.system?.thread,
-      host: data?.system?.host,
-      identifier: data?.user?.identifier,
-      session: data?.user?.session,
-      session_inc: data?.user?.session_inc,
-    });
+    const logCollection = $app.findCollectionByNameOrId("log");
+    const logRecord = new Record(logCollection)
+    
+    logRecord.set('title', data?.title)
+    logRecord.set('detail', data?.detail)
+    logRecord.set('channel', data?.channel)
+    logRecord.set('level', data?.level)
+    logRecord.set('submitted_on', data?.submitted_on)
+    logRecord.set('tenant', data?.source?.tenant)
+    logRecord.set('source', data?.source?.source)
+    logRecord.set('thread', data?.system?.thread)
+    logRecord.set('host', data?.system?.host)
+    logRecord.set('identifier', data?.user?.identifier)
+    logRecord.set('session', data?.user?.session)
+    logRecord.set('session_inc', data?.user?.session_inc)
 
-    $app.dao().saveRecord(logRecord);
+    $app.save(logRecord);
 
 
     return c.json(200, {
@@ -162,14 +54,14 @@ routerAdd("post", "api/custom/log", (c) => {
   } catch (e) {
     return c.json(500, {
       success: false,
-      message: JSON.stringify({ error: e }),
+      message: e.message,
     });
   }
 });
 
 
 /* example usage
-    curl -X POST https://pocketbase.endpoint.com/api/custom/log
+    curl -X POST https://pocketbase.endpoint.com/api/v1/log
     -H "Content-Type: application/json"
     -d '{
         "title": "Test Log",

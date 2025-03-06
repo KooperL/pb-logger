@@ -308,8 +308,8 @@ function renderTable(tableContainer, table) {
     let rowOffset = 0;
     const fiveDaysAgo = new Date(new Date().getTime() - 5 * 24 * 60 * 60 * 1000).toISOString()
     const result = await pb.collection("log").getList(rowOffset + 1, pageSize, {
-        filter: `created > "${fiveDaysAgo}" ${params?.host ? `&& host = "${params.host}"` : ''}`,
-        sort: "-created",
+        filter: `submitted_on > "${fiveDaysAgo.replace('T', ' ')}" ${params?.host ? `&& host = "${params.host}"` : ''}`,
+        sort: "-submitted_on",
     });
 
     let data = [...result.items];
