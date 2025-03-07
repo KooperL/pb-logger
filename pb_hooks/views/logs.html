@@ -7,42 +7,293 @@
     <title>pocketbase-logging</title>
     <meta name="description" content="Realtime logs for https://github.com/KooperL/pocketbase-logging" />
     <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-dark: #3730a3;
+            --bg-color: #f9fafb;
+            --text-color: #1f2937;
+            --border-color: #e5e7eb;
+            --header-bg: #ffffff;
+            --card-bg: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
         body {
-            overflow: scroll;
-            margin: 0px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            line-height: 1.5;
+            overflow-x: hidden;
         }
 
         #header {
-            background-color: #f1f1f1;
-            padding: 10px;
+            background-color: var(--header-bg);
+            padding: 1rem 1.5rem;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        #header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
         }
 
         #header-links {
             display: flex;
             flex-direction: row;
-            gap: 20px;
+            gap: 1.5rem;
+        }
+
+        #header-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+        }
+
+        #header-links a:hover {
+            color: var(--primary-color);
+            background-color: rgba(79, 70, 229, 0.1);
         }
 
         .filter {
-            border-radius: 16px;
-            padding: 5px 10px;
-            border: 1px solid black;
-            text-wrap: nowrap;
-            width: min-content;
-            height: min-content;
-        } 
+            border-radius: 9999px;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.25rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .filter:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-md);
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+        
+        .filter.active {
+            background-color: rgba(79, 70, 229, 0.1);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        #global-filter {
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 400px;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        #global-filter:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+
+        .filter-container {
+            background-color: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .filter-icon {
+            width: 24px;
+            height: 24px;
+            stroke: var(--primary-color);
+            flex-shrink: 0;
+            margin-right: 0.5rem;
+        }
+        
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        #table-container {
+            background-color: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            box-shadow: var(--shadow-md);
+            overflow-x: auto;
+            width: 100%;
+        }
+        
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px; /* Ensures table doesn't get too narrow */
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: rgba(79, 70, 229, 0.05);
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        tr:hover {
+            background-color: rgba(79, 70, 229, 0.02);
+        }
+        
+        /* Pagination controls */
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .pagination-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .pagination-button {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .pagination-button:hover:not(:disabled) {
+            border-color: var(--primary-light);
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+        
+        .pagination-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .pagination-button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        /* Dropdown styling */
+        select {
+            width: 8rem;
+            appearance: none;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 0.5rem 2rem 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            color: var(--text-color);
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        select:hover {
+            border-color: var(--primary-light);
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        #details-verbose {
+            background-color: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            resize: vertical;
+            min-height: 150px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 0;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
     </style>
     <script src="https://unpkg.com/@tanstack/table-core@8.11.3/build/umd/index.production.js"></script>
     <script src="https://unpkg.com/@tanstack/match-sorter-utils@8.19.4/build/umd/index.production.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/pocketbase@0.21.5/dist/pocketbase.umd.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script type="module" src="./js/main.js">
-    </script>
-
+    <script type="module" src="./js/main.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -51,38 +302,35 @@
         <div id="header">
             <h1>pocketbase-logging</h1>
             <div id="header-links">
-                <a href="https://github.com/KooperL/pocketbase-logging>">Github</a>
+                <a href="https://github.com/KooperL/pocketbase-logging">Github</a>
                 <a href="https://logger.pockethost.io/_">Pocketbase admin</a>
             </div>
         </div>
 
-        <hr />
+        <div class="main-container">
+            <div class="filter-container">
+                <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
+                    <input type="text" id="global-filter" placeholder="Filter by text..." />
+                    <div class="filter-header">
+                        <div class="filter-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 6H19M21 12H16M21 18H16M7 20V13.5612C7 13.3532 7 13.2492 6.97958 13.1497C6.96147 13.0615 6.93151 12.9761 6.89052 12.8958C6.84431 12.8054 6.77934 12.7242 6.64939 12.5617L3.35061 8.43826C3.22066 8.27583 3.15569 8.19461 3.10948 8.10417C3.06849 8.02393 3.03853 7.93852 3.02042 7.85026C3 7.75078 3 7.64677 3 7.43875V5.6C3 5.03995 3 4.75992 3.10899 4.54601C3.20487 4.35785 3.35785 4.20487 3.54601 4.10899C3.75992 4 4.03995 4 4.6 4H13.4C13.9601 4 14.2401 4 14.454 4.10899C14.6422 4.20487 14.7951 4.35785 14.891 4.54601C15 4.75992 15 5.03995 15 5.6V7.43875C15 7.64677 15 7.75078 14.9796 7.85026C14.9615 7.93852 14.9315 8.02393 14.8905 8.10417C14.8443 8.19461 14.7793 8.27583 14.6494 8.43826L11.3506 12.5617C11.2207 12.7242 11.1557 12.8054 11.1095 12.8958C11.0685 12.9761 11.0385 13.0615 11.0204 13.1497C11 13.2492 11 13.3532 11 13.5612V17L7 20Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </div>
+                        <span>Filters:</span>
+                    </div>
+                    <div class="filter-tags" id="filter-container">
+                        <!-- Filters will be appended here -->
+                    </div>
+                </div>
+            </div>
 
-        <div class="w-full flex flex-row flex-wrap items-center h-18 gap-4 px-4 py-2">
-            <input type="text" id="global-filter" placeholder="Filter by text..." class="border-2 border-indigo-500 p-4 rounded-xl text-gray-800"/>
-            <div class="flex flex-row flex-wrap" id="filter-container">
-                <div style="height: 35px; width: 35px;" ><svg viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                        <path
-                            d="M21 6H19M21 12H16M21 18H16M7 20V13.5612C7 13.3532 7 13.2492 6.97958 13.1497C6.96147 13.0615 6.93151 12.9761 6.89052 12.8958C6.84431 12.8054 6.77934 12.7242 6.64939 12.5617L3.35061 8.43826C3.22066 8.27583 3.15569 8.19461 3.10948 8.10417C3.06849 8.02393 3.03853 7.93852 3.02042 7.85026C3 7.75078 3 7.64677 3 7.43875V5.6C3 5.03995 3 4.75992 3.10899 4.54601C3.20487 4.35785 3.35785 4.20487 3.54601 4.10899C3.75992 4 4.03995 4 4.6 4H13.4C13.9601 4 14.2401 4 14.454 4.10899C14.6422 4.20487 14.7951 4.35785 14.891 4.54601C15 4.75992 15 5.03995 15 5.6V7.43875C15 7.64677 15 7.75078 14.9796 7.85026C14.9615 7.93852 14.9315 8.02393 14.8905 8.10417C14.8443 8.19461 14.7793 8.27583 14.6494 8.43826L11.3506 12.5617C11.2207 12.7242 11.1557 12.8054 11.1095 12.8958C11.0685 12.9761 11.0385 13.0615 11.0204 13.1497C11 13.2492 11 13.3532 11 13.5612V17L7 20Z"
-                            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </g>
-                </svg></div>
+            <div id="table-container"></div>
+            
+            <div id="details-container">
+                <textarea id="details-verbose"></textarea>
+            </div>
         </div>
-    </div>
-        <hr />
-
-        <div id="table-container" class="p-2" style="width:100%;"></div>
-        <hr />
-        <div style="width:100%;">
-            <textarea id="details-verbose" style="width:100%" class="p-2">
-
-        </textarea>
-        </div>
-
     </div>
 </body>
 
