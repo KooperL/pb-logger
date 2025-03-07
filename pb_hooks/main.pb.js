@@ -44,6 +44,7 @@ routerAdd("post", "/api/v1/log", (c) => {
     logRecord.set('identifier', data?.user?.identifier)
     logRecord.set('session', data?.user?.session)
     logRecord.set('session_inc', data?.user?.session_inc)
+    logRecord.set('created', new Date().toISOString())
 
     $app.save(logRecord);
 
